@@ -1,0 +1,6 @@
+from pandas import *
+dat= read_csv("C:/Users/user/Downloads/dust_20200101211305.csv", encoding='CP949') //pollution data
+dat2= read_csv("C:/Users/user/Downloads/total_20200101231822.csv", encoding='CP949') //other climate related data
+new_data=  concat([dat2, dat['미세먼지농도(㎍/㎥)'].reset_index(drop=True)], axis=1) // two data concatenated
+
+new_data.to_csv("C:/Users/user/Downloads/final_data.csv", index=False)
