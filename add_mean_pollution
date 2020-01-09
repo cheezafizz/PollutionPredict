@@ -1,0 +1,64 @@
+
+from pandas import *
+dat= read_csv("C:/Users/fjqld/Desktop/PollutionPredict-master/PollutionPredict-master/final_data.csv")
+len(dat)	##3652
+
+
+a=[]
+b=[]
+##1/1~2/28
+for j in range(59):
+    t=j
+    for i in range(10):
+        a.append(dat['미세먼지농도(㎍/㎥)'][t])
+        if(i%4==3):
+            t+=366
+        else:
+            t+=365
+    b.append(a)
+    a=[]
+
+
+dat['미세먼지농도(㎍/㎥)'][59+365+365+366]
+
+
+##3/1~12/31
+for j in range(59,365):
+    t=j
+   # print(t)
+    for i in range(10):
+        a.append(dat['미세먼지농도(㎍/㎥)'][t])
+        if(i%4==2):
+            t+=366
+        else:
+            t+=365
+    b.append(a)
+    a=[]
+
+##2/29 data##
+feb_29 =[]
+t = 365+365+365+59
+feb_29.append(dat['미세먼지농도(㎍/㎥)'][t])
+t+= 366+365+365+365
+feb_29.append(dat['미세먼지농도(㎍/㎥)'][t])
+feb_29
+
+
+##make dataset
+from numpy import *
+day_365=nanmean(b,axis=1)
+day_366=insert(day_365,59,37)
+c=tile(day_365,3)		#2009~2011
+c=append(c,day_366)		#2009~2012
+c=tile(c,2)			#2009~2016
+c=append(c,tile(day_365,2))	#2009~2018
+#len(c)				#3652
+smog_mean = DataFrame({'같은날미세먼지평균':c})
+new_data=  concat([dat, smog_mean.reset_index(drop=True)], axis=1) 
+
+
+new_data.head()
+
+
+
+
