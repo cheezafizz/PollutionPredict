@@ -79,21 +79,10 @@ new_data['일강수량(mm)'][index]=0
 new_data.head()
 
 
-# In[4]:
-
-
-mu = mean(new_data,axis=0)[['평균기온(°C)','일강수량(mm)','평균 풍속(m/s)','최다풍향(16방위)','평균 상대습도(%)','평균 현지기압(hPa)','같은날미세먼지평균(㎍/㎥)']]
-st = std(new_data,axis=0)[['평균기온(°C)','일강수량(mm)','평균 풍속(m/s)','최다풍향(16방위)','평균 상대습도(%)','평균 현지기압(hPa)','같은날미세먼지평균(㎍/㎥)']]
-
-
-# In[5]:
-
-
 y_data = new_data['미세먼지농도(㎍/㎥)']
 x_data = new_data[['평균기온(°C)','일강수량(mm)','평균 풍속(m/s)','최다풍향(16방위)','평균 상대습도(%)','평균 현지기압(hPa)','같은날미세먼지평균(㎍/㎥)']]
-mu = mean(new_data,axis=0)[['평균기온(°C)','일강수량(mm)','평균 풍속(m/s)','최다풍향(16방위)','평균 상대습도(%)','평균 현지기압(hPa)','같은날미세먼지평균(㎍/㎥)']]
-st = std(new_data,axis=0)[['평균기온(°C)','일강수량(mm)','평균 풍속(m/s)','최다풍향(16방위)','평균 상대습도(%)','평균 현지기압(hPa)','같은날미세먼지평균(㎍/㎥)']]
-x_data=(x_data-mu)/st
+# mu = mean(new_data,axis=0)[['평균기온(°C)','일강수량(mm)','평균 풍속(m/s)','최다풍향(16방위)','평균 상대습도(%)','평균 현지기압(hPa)','같은날미세먼지평균(㎍/㎥)']]
+# st = std(new_data,axis=0)[['평균기온(°C)','일강수량(mm)','평균 풍속(m/s)','최다풍향(16방위)','평균 상대습도(%)','평균 현지기압(hPa)','같은날미세먼지평균(㎍/㎥)']]
 x_data = np.array(x_data)
 
 
@@ -108,7 +97,7 @@ import tensorflow.compat.v1 as tf
 tf.disable_eager_execution()
 
 X = tf.placeholder(tf.float32,shape=[1,7])
-Y = tf.placeholder(tf.float32,shape=[None,1])
+Y = tf.placeholder(tf.float32,shape=[1,1])
 
 
 W1 = tf.Variable(tf.random_uniform([7, 7], -1., 1.))
@@ -140,9 +129,10 @@ sess = tf.Session()
 sess.run(init)
  
 for step in range(3652):
-    sess.run(train_op, feed_dict={X: tf.expand_dims(np.float32(x_data[:,step]),0), Y: y_data[step]})
+    sess.run(train_op, feed_dict={X: np.array([(np.float32(x_data[step]))]).T.T, Y: np.array([[y_data[step]]])})
  
     if (step + 1) % 10 == 0:
-        print(step + 1, sess.run(cost, feed_dict={X:tf.expand_dims(np.float32(x_data[:,step]),1), Y: y_data[step]}))
+        print(step + 1, sess.run(cost, feed_dict={X:np.array([(np.float32(x_data[step]))]).T.T, Y: np.array([[y_data[step]]])}))
  
+
 
